@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form"
 import { Button } from "@/components/ui/button"
 import { Form } from "@/components/ui/form"
 
-import { registerFormSchema } from "@/components/registerform/RegisterSchema"
+import { registerFormSchema } from "@/app/auth/registerform/RegisterSchema"
 
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"

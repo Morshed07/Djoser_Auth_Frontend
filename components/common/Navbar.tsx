@@ -11,8 +11,8 @@ export default function Navbar() {
                   <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">Flowbite</span>
               </a>
               <div className="flex items-center space-x-6 rtl:space-x-reverse">
-                  <a href="tel:5541251234" className="text-sm  text-gray-500 dark:text-white hover:underline">+880 1643-118070</a>
-                  <a href="#" className="text-sm bg-black px-5 py-1 rounded-md text-white">Login</a>
+                  <a href="tel:01643118070" className="text-sm  text-gray-500 dark:text-white hover:underline">+880 1643-118070</a>
+                  <Link href="/auth/login" className="text-sm bg-black px-5 py-1 rounded-md text-white">Login</Link>
               </div>
           </div>
       </nav>

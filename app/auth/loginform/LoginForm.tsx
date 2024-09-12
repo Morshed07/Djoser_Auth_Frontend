@@ -1,33 +1,70 @@
 "use client"
 
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Button } from "@/components/ui/button";
+import { Form } from "@/components/ui/form";
+import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input"; 
 
-import { Button } from "@/components/ui/button"
-import { Form } from "@/components/ui/form"
+import { logInFormSchema } from "./LoginSchema";
+import Link from "next/link";
+import { handleLogin } from "@/lib/actions/ServerAction";
+import { useState } from "react";
 
-import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
+import { useToast } from "@/hooks/use-toast";
+import { ScaleLoader } from "react-spinners";
+import { MarginIcon } from "@radix-ui/react-icons";
+import { useRouter } from "next/navigation";
 
-import { logInFormSchema } from "./LoginSchema"
-import Link from "next/link"
-
+// Define the form data type
+interface FormData {
+  email: string;
+  password: string;
+}
 
 export function LoginForm() {
-  const form = useForm({
+  const router = useRouter()
+  const { toast } = useToast()
+  const [isLoading, setIsLoading] = useState(false);
+  const form = useForm<FormData>({
     resolver: zodResolver(logInFormSchema),
     defaultValues: {
       email: "",
-      password: ""
+      password: "",
     },
-  })
+  });
 
   // Handle form submission
-  const onSubmit = (values: any) => {
-    console.log(values)
-    // Add your registration logic here (e.g., API call)
-  }
+  const onSubmit = async (formData: FormData) => {
+    setIsLoading(true);
+    try {
+      const response = await handleLogin(formData);
 
+      if (response.success) {
+        toast({
+          title: "Success",
+          description: "You have logged in successfully",
+        })
+        // Redirect to dashboard or desired page
+        router.push('/')
+      } else {
+        toast({
+          title: "Error",
+          description: "Login Unsuccessfull !",
+        })
+      }
+    } catch (error: any) {
+      console.error(error);
+      toast({
+        title: "Error !",
+        description: error.detail,
+      }) // Show error message
+    } finally {
+      setIsLoading(false);
+    }
+  };
+ 
   return (
     <>
       {/*
@@ -76,9 +113,9 @@ export function LoginForm() {
                   Password
                 </label>
                 <div className="text-sm">
-                  <a href="#" className="font-semibold text-indigo-600 hover:text-indigo-500">
+                  <Link href="/auth/forgot-password" className="font-semibold text-indigo-600 hover:text-indigo-500">
                     Forgot password?
-                  </a>
+                  </Link>
                 </div>
               </div>
               <div className="mt-2">
@@ -103,8 +140,15 @@ export function LoginForm() {
               <Button
                 type="submit"
                 className="flex w-full justify-center rounded-md bg-black px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-slate-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                disabled = {isLoading}
               >
-                Sign in
+                {isLoading ? (
+                <div className="flex justify-center items-center" style={{background:"transparent"}}>
+                  <ScaleLoader color="#fff" height={16} width={4} /> 
+                </div>
+                ) : (
+                  'Sign in'
+                )}
               </Button>
             </div>
           </form>
